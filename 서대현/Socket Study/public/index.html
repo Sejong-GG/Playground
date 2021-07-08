@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Ping-Pong Online</title>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+    <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+    $(function(){
+        var socket = io();
+        var GAME_SETTINGS = null;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext("2d");
+
+        $(canvas).css("display", "block");
+        $(canvas).css("border", "black 1px solid");
+        $(canvas).css("margin", "0 auto");
+
+        socket.on('connected', (SERVER_GAME_SETTING) => {
+            GAME_SETTINGS = SERVER_GAME_SETTING
+            $(canvas).attr("width", GAME_SETTINGS.WIDTH)
+            $(canvas).attr("height", GAME_SETTINGS.HEIGHT)
+            document.body.appendChild(canvas)
+        })
+
+        socket.on('draw', (object) => {
+            drawBackground();
+            console.log("test");
+            ctx.fillStyle = object.status.color;
+            ctx.fillRect(object.status.x,object.status.y,object.status.width,object.status.height);
+        })
+
+        socket.on('pull', (id) => {
+            console.log(id);
+            var item = document.createElement('li');
+            item.textContent = id;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        })
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('push', input.value);
+                input.value = '';
+            }
+        });
+
+        function drawBackground(){
+            ctx.fillStyle = GAME_SETTINGS.BACKGROUND_COLOR;
+            ctx.fillRect(0,0,GAME_SETTINGS.WIDTH,GAME_SETTINGS.HEIGHT);
+        } 
+    })
+</script>
+</html>

@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>Ping-Pong Online</title>
-  </head>
-  <body>
     <script src="/socket.io/socket.io.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.js"></script>
+    <meta charset="utf-8">
+    <title>Ping-Pong Online</title>
     <script>
+      
+    </script>
+  </head>
+  <body>
+    <script>
+      var socket = io();
+      function enterRoom(n)
+      {
+        socket.emit('enterRoom', n);
+        return false;
+      }
+      function leaveRoom(n)
+      {
+        socket.emit('leaveRoom', n);
+        return false;
+      }
     $(function(){
       var GAME_SETTINGS = null;
 
@@ -18,6 +32,9 @@
       $(canvas).css("margin", "0 auto");
 
       var socket = io();
+      
+      
+
       $('body').on('keydown', function(e){
         socket.emit('keydown', e.keyCode)
       });
@@ -45,5 +62,12 @@
       }
     })
     </script>
+
+    <button onclick="enterRoom(1)">move to room1</button>
+    <button onclick="enterRoom(2)">move to room2</button>
+    <br>
+    <button onclick="leaveRoom(1)">leave room1</button>
+    <button onclick="leaveRoom(2)">leave room2</button>
+
   </body>
 </html>

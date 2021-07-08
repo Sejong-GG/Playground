@@ -11,10 +11,50 @@ http.listen(port, function(){
   console.log("server on!: http://localhost:3000/");
 });
 
+
+
 var objects = {};
 
 io.on('connection', function(socket){
   console.log('user connected: ', socket.id);
+
+  socket.on('enterRoom',(n) => // enterRoom으로 신호가 오면
+  {
+    socket.join('room'+n);// room1
+    console.log('enter room'+n+' :'+socket.id);
+  });
+  socket.on('leaveRoom',(n) => // enterRoom으로 신호가 오면
+  {
+    socket.leave('room'+n); // room1
+    console.log('leave room'+n+' :'+socket.id);
+  });
+  
+
+  // var nroom1=io.of('/namespace1');
+  // nroom1.on('connection', function(room_socket)
+  // {
+  //   console.log('enter room1 :'+room_socket.id);
+  //   nroom1.emit('pull_notice', room_socket.id+'님이 입장하셨습니다.');
+
+  //   room_socket.on('disconnect', function()
+  //   {
+  //     console.log('leave room1 :'+room_socket.id);
+  //     nroom1.emit('pull_notice', room_socket.id+'님이 퇴장하셨습니다.');
+  //   });
+  // });
+  // var nroom2=io.of('/namespace2');
+  // nroom2.on('connection', function(room_socket)
+  // {
+  //   console.log('enter room2 :'+room_socket.id);
+  //   nroom2.emit('pull_notice', room_socket.id+'님이 입장하셨습니다.');
+
+  //   room_socket.on('disconnect', function()
+  //   {
+  //     console.log('leave room2 :'+room_socket.id);
+  //     nroom1.emit('pull_notice', room_socket.id+'님이 퇴장하셨습니다.');
+  //   });
+  // });
+
   objects[socket.id] = new UserObject();
   io.to(socket.id).emit('connected', GAME_SETTINGS);
 
