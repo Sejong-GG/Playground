@@ -73,4 +73,21 @@ router.get('/room/:id', async (req, res, next) => {
   }
 });
 
+router.post('/room/:id/chat', async (req, res, next) => {
+	console.log('submit 요청 받음');
+	try {
+	  	const chat = await Chat.create({
+		room: req.params.id,
+		user: req.session.color,
+		chat: req.body.chat,
+	  });
+	  req.app.get('io').of('/chat').to(req.params.id).emit('chat', chat);
+	  console.log('/chat 요청 보냄');
+	  res.send('ok');
+	} catch (error) {
+	  console.error(error);
+	  next(error);
+	}
+  });
+
 module.exports = router;
