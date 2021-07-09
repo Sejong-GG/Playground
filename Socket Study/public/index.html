@@ -10,7 +10,7 @@
     <input id="input" autocomplete="off" /><button>Send</button>
     </form>
   </body>
-  <script src="/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.js"></script>
 <script>
     $(function(){
@@ -33,9 +33,10 @@
         socket.on('draw', (object) => {
             drawBackground();
             console.log("test");
-            ctx.fillStyle = object.status.color;
-            ctx.fillRect(object.status.x,object.status.y,object.status.width,object.status.height);
-        })
+            // ctx.fillStyle = object.status.color;
+            // ctx.fillRect(object.status.x,object.status.y,object.status.width,object.status.height);
+			drawPlayer(object);
+		})
 
         socket.on('pull', (id) => {
             console.log(id);
@@ -56,7 +57,16 @@
         function drawBackground(){
             ctx.fillStyle = GAME_SETTINGS.BACKGROUND_COLOR;
             ctx.fillRect(0,0,GAME_SETTINGS.WIDTH,GAME_SETTINGS.HEIGHT);
-        } 
+        }
+		
+		function drawPlayer(object){
+			ctx.fillStyle = object.status.color;
+            ctx.fillRect(object.status.x,object.status.y,object.status.width*10,object.status.height*5);
+			
+			ctx.font='15px serif';
+			ctx.fillStyle = "black";
+			ctx.fillText(socket.id, 0,object.status.height*5/2);
+        }
     })
 </script>
 </html>

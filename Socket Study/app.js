@@ -23,11 +23,17 @@ var GAME_SETTINGS = {
     WIDTH : 600, HEIGHT : 400, BACKGROUND_COLOR : "#FFFFFF"
 };
 
+var lobbyManager = new (require('./LobbyManager.js'))(io);
+var roomManager = new (require('./RoomManager.js'))(io,GAME_SETTINGS);
 io.on('connection', (socket) => {
-    console.log('user connected: ', socket.id)
     objects[socket.id] = new UserObject();      // objects[socket.id] : key로 value 찾기( ex. {"key": "value"}) 
+    console.log('user connected: ', socket.id)
     console.log('user color: ' + objects[socket.id].status.color)
-    io.to(socket.id).emit('connected', GAME_SETTINGS);
+    
+	lobbyManager.push(socket);
+	lobbyManager.dispatch(roomManager);
+
+	io.to(socket.id).emit('connected', GAME_SETTINGS);
     io.emit('draw', objects[socket.id])
 
     socket.on('disconnect', () => {
